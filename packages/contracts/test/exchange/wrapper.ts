@@ -13,6 +13,7 @@ import { ERC721ProxyContract } from '../../src/contract_wrappers/generated/e_r_c
 import { ExchangeContract } from '../../src/contract_wrappers/generated/exchange';
 import { TokenRegistryContract } from '../../src/contract_wrappers/generated/token_registry';
 import { artifacts } from '../../src/utils/artifacts';
+import { expectRevertOrAlwaysFailingTransaction } from '../../src/utils/assertions';
 import { assetProxyUtils } from '../../src/utils/asset_proxy_utils';
 import { chaiSetup } from '../../src/utils/chai_setup';
 import { constants } from '../../src/utils/constants';
@@ -171,8 +172,8 @@ describe('Exchange wrappers', () => {
                 expirationTimeSeconds: new BigNumber(Math.floor((Date.now() - 10000) / 1000)),
             });
 
-            return expect(exchangeWrapper.fillOrKillOrderAsync(signedOrder, takerAddress)).to.be.rejectedWith(
-                constants.REVERT,
+            return expectRevertOrAlwaysFailingTransaction(
+                exchangeWrapper.fillOrKillOrderAsync(signedOrder, takerAddress),
             );
         });
 
@@ -183,8 +184,8 @@ describe('Exchange wrappers', () => {
                 takerAssetFillAmount: signedOrder.takerAssetAmount.div(2),
             });
 
-            return expect(exchangeWrapper.fillOrKillOrderAsync(signedOrder, takerAddress)).to.be.rejectedWith(
-                constants.REVERT,
+            return expectRevertOrAlwaysFailingTransaction(
+                exchangeWrapper.fillOrKillOrderAsync(signedOrder, takerAddress),
             );
         });
     });
@@ -484,11 +485,11 @@ describe('Exchange wrappers', () => {
 
                 await exchangeWrapper.fillOrKillOrderAsync(signedOrders[0], takerAddress);
 
-                return expect(
+                return expectRevertOrAlwaysFailingTransaction(
                     exchangeWrapper.batchFillOrKillOrdersAsync(signedOrders, takerAddress, {
                         takerAssetFillAmounts,
                     }),
-                ).to.be.rejectedWith(constants.REVERT);
+                );
             });
         });
 
@@ -678,11 +679,11 @@ describe('Exchange wrappers', () => {
                     orderFactory.newSignedOrder(),
                 ];
 
-                return expect(
+                return expectRevertOrAlwaysFailingTransaction(
                     exchangeWrapper.marketSellOrdersAsync(signedOrders, takerAddress, {
                         takerAssetFillAmount: Web3Wrapper.toBaseUnitAmount(new BigNumber(1000), 18),
                     }),
-                ).to.be.rejectedWith(constants.REVERT);
+                );
             });
         });
 
@@ -767,11 +768,11 @@ describe('Exchange wrappers', () => {
                     orderFactory.newSignedOrder(),
                 ];
 
-                return expect(
+                return expectRevertOrAlwaysFailingTransaction(
                     exchangeWrapper.marketSellOrdersNoThrowAsync(signedOrders, takerAddress, {
                         takerAssetFillAmount: Web3Wrapper.toBaseUnitAmount(new BigNumber(1000), 18),
                     }),
-                ).to.be.rejectedWith(constants.REVERT);
+                );
             });
         });
 
@@ -856,11 +857,11 @@ describe('Exchange wrappers', () => {
                     orderFactory.newSignedOrder(),
                 ];
 
-                return expect(
+                return expectRevertOrAlwaysFailingTransaction(
                     exchangeWrapper.marketBuyOrdersAsync(signedOrders, takerAddress, {
                         makerAssetFillAmount: Web3Wrapper.toBaseUnitAmount(new BigNumber(1000), 18),
                     }),
-                ).to.be.rejectedWith(constants.REVERT);
+                );
             });
         });
 
@@ -945,11 +946,11 @@ describe('Exchange wrappers', () => {
                     orderFactory.newSignedOrder(),
                 ];
 
-                return expect(
+                return expectRevertOrAlwaysFailingTransaction(
                     exchangeWrapper.marketBuyOrdersNoThrowAsync(signedOrders, takerAddress, {
                         makerAssetFillAmount: Web3Wrapper.toBaseUnitAmount(new BigNumber(1000), 18),
                     }),
-                ).to.be.rejectedWith(constants.REVERT);
+                );
             });
         });
 

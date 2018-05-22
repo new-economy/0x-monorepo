@@ -17,6 +17,7 @@ import {
     FillContractEventArgs,
 } from '../../src/contract_wrappers/generated/exchange';
 import { artifacts } from '../../src/utils/artifacts';
+import { expectRevertOrAlwaysFailingTransaction } from '../../src/utils/assertions';
 import { assetProxyUtils } from '../../src/utils/asset_proxy_utils';
 import { chaiSetup } from '../../src/utils/chai_setup';
 import { constants } from '../../src/utils/constants';
@@ -644,9 +645,9 @@ describe('matchOrders', () => {
             // Cancel left order
             await exchangeWrapper.cancelOrderAsync(signedOrderLeft, signedOrderLeft.makerAddress);
             // Match orders
-            return expect(
+            return exexpectRevertOrAlwaysFailingTransactionpect(
                 exchangeWrapper.matchOrdersAsync(signedOrderLeft, signedOrderRight, takerAddress),
-            ).to.be.rejectedWith(constants.REVERT);
+            );
         });
 
         it('Should throw if right order is not fillable', async () => {
@@ -670,9 +671,9 @@ describe('matchOrders', () => {
             // Cancel right order
             await exchangeWrapper.cancelOrderAsync(signedOrderRight, signedOrderRight.makerAddress);
             // Match orders
-            return expect(
+            return expectRevertOrAlwaysFailingTransaction(
                 exchangeWrapper.matchOrdersAsync(signedOrderLeft, signedOrderRight, takerAddress),
-            ).to.be.rejectedWith(constants.REVERT);
+            );
         });
 
         it('should throw if there is not a positive spread', async () => {
@@ -694,7 +695,7 @@ describe('matchOrders', () => {
                 feeRecipientAddress: feeRecipientAddressRight,
             });
             // Match orders
-            return expect(
+            return expectRevertOrAlwaysFailingTransaction(
                 matchOrderTester.matchOrdersAndVerifyBalancesAsync(
                     signedOrderLeft,
                     signedOrderRight,
@@ -702,7 +703,7 @@ describe('matchOrders', () => {
                     erc20BalancesByOwner,
                     erc721TokenIdsByOwner,
                 ),
-            ).to.be.rejectedWith(constants.REVERT);
+            );
         });
 
         it('should throw if the left maker asset is not equal to the right taker asset ', async () => {
@@ -724,7 +725,7 @@ describe('matchOrders', () => {
                 feeRecipientAddress: feeRecipientAddressRight,
             });
             // Match orders
-            return expect(
+            return expectRevertOrAlwaysFailingTransaction(
                 matchOrderTester.matchOrdersAndVerifyBalancesAsync(
                     signedOrderLeft,
                     signedOrderRight,
@@ -732,7 +733,7 @@ describe('matchOrders', () => {
                     erc20BalancesByOwner,
                     erc721TokenIdsByOwner,
                 ),
-            ).to.be.rejectedWith(constants.REVERT);
+            );
         });
 
         it('should throw if the right maker asset is not equal to the left taker asset', async () => {
@@ -754,7 +755,7 @@ describe('matchOrders', () => {
                 feeRecipientAddress: feeRecipientAddressRight,
             });
             // Match orders
-            return expect(
+            return expectRevertOrAlwaysFailingTransaction(
                 matchOrderTester.matchOrdersAndVerifyBalancesAsync(
                     signedOrderLeft,
                     signedOrderRight,
@@ -762,7 +763,7 @@ describe('matchOrders', () => {
                     erc20BalancesByOwner,
                     erc721TokenIdsByOwner,
                 ),
-            ).to.be.rejectedWith(constants.REVERT);
+            );
         });
 
         it('should transfer correct amounts when left order maker asset is an ERC721 token', async () => {

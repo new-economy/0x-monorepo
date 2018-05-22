@@ -8,6 +8,7 @@ import { DummyERC20TokenContract } from '../../src/contract_wrappers/generated/d
 import { ERC20ProxyContract } from '../../src/contract_wrappers/generated/e_r_c20_proxy';
 import { ExchangeContract } from '../../src/contract_wrappers/generated/exchange';
 import { artifacts } from '../../src/utils/artifacts';
+import { expectRevertOrAlwaysFailingTransaction } from '../../src/utils/assertions';
 import { assetProxyUtils } from '../../src/utils/asset_proxy_utils';
 import { chaiSetup } from '../../src/utils/chai_setup';
 import { constants } from '../../src/utils/constants';
@@ -130,8 +131,8 @@ describe('Exchange transactions', () => {
             });
 
             it('should throw if not called by specified sender', async () => {
-                return expect(exchangeWrapper.executeTransactionAsync(signedTx, takerAddress)).to.be.rejectedWith(
-                    constants.REVERT,
+                return expectRevertOrAlwaysFailingTransaction(
+                    exchangeWrapper.executeTransactionAsync(signedTx, takerAddress),
                 );
             });
 
@@ -172,8 +173,8 @@ describe('Exchange transactions', () => {
 
             it('should throw if the a 0x transaction with the same transactionHash has already been executed', async () => {
                 await exchangeWrapper.executeTransactionAsync(signedTx, senderAddress);
-                return expect(exchangeWrapper.executeTransactionAsync(signedTx, senderAddress)).to.be.rejectedWith(
-                    constants.REVERT,
+                return expectRevertOrAlwaysFailingTransaction(
+                    exchangeWrapper.executeTransactionAsync(signedTx, senderAddress),
                 );
             });
 
@@ -191,8 +192,8 @@ describe('Exchange transactions', () => {
             });
 
             it('should throw if not called by specified sender', async () => {
-                return expect(exchangeWrapper.executeTransactionAsync(signedTx, makerAddress)).to.be.rejectedWith(
-                    constants.REVERT,
+                return expectRevertOrAlwaysFailingTransaction(
+                    exchangeWrapper.executeTransactionAsync(signedTx, makerAddress),
                 );
             });
 
