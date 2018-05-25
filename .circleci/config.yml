@@ -36,7 +36,7 @@ jobs:
           keys:
             - repo-{{ .Environment.CIRCLE_SHA1 }}
       - run: yarn test:installation
-  test-0xjs:
+  test-contract-wrappers:
     docker:
       - image: circleci/node:6.12
     working_directory: ~/repo
@@ -48,11 +48,11 @@ jobs:
           name: testrpc
           command: npm run testrpc -- --db testrpc_snapshot
           background: true
-      - run: yarn wsrun test:circleci 0x.js
+      - run: yarn wsrun test:circleci @0xproject/contract-wrappers
       - save_cache:
-          key: coverage-0xjs-{{ .Environment.CIRCLE_SHA1 }}
+          key: coverage-contract-wrappers-{{ .Environment.CIRCLE_SHA1 }}
           paths:
-            - ~/repo/packages/0x.js/coverage/lcov.info
+            - ~/repo/packages/contract-wrappers/coverage/lcov.info
   test-contracts:
     docker:
       - image: circleci/node:6.12
@@ -95,11 +95,15 @@ jobs:
           name: testrpc
           command: npm run testrpc -- --db testrpc_snapshot
           background: true
-      - run: yarn wsrun test:circleci --exclude contracts --exclude 0x.js --exclude @0xproject/sol-compiler --stages --exclude-missing
+      - run: yarn wsrun test:circleci --exclude contracts --exclude @0xproject/contract-wrappers --exclude @0xproject/sol-compiler --stages --exclude-missing
       - save_cache:
           key: coverage-assert-{{ .Environment.CIRCLE_SHA1 }}
           paths:
             - ~/repo/packages/assert/coverage/lcov.info
+      - save_cache:
+          key: coverage-contract-wrappers-{{ .Environment.CIRCLE_SHA1 }}
+          paths:
+            - ~/repo/packages/contract-wrappers/coverage/lcov.info
       - save_cache:
           key: coverage-connect-{{ .Environment.CIRCLE_SHA1 }}
           paths:
@@ -173,7 +177,7 @@ jobs:
             - coverage-sol-compiler-{{ .Environment.CIRCLE_SHA1 }}
       - restore_cache:
           keys:
-            - coverage-0xjs-{{ .Environment.CIRCLE_SHA1 }}
+            - coverage-contract-wrappers-{{ .Environment.CIRCLE_SHA1 }}
       - restore_cache:
           keys:
             - coverage-metacoin-{{ .Environment.CIRCLE_SHA1 }}
@@ -206,6 +210,6 @@ workflows:
             - build
       - submit-coverage:
           requires:
-            - test-0xjs
             - test-sol-compiler
             - test-rest
+            - test-contract-wrappers
